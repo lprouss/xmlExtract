@@ -1,7 +1,18 @@
 function varargout = convertParseInfo( input, varargin )
 
+% input: file or structure containing information to parse a XML file
+% outfile: name of the file used to save the parsing information, required if 'input' is a structure
+% chkFlag (optional): flag to check the parsing information for ambiguous tags
+
+% pinfo: parsing information read from the input file
+
+% external functions: checkParseInfo (only if 'chkFlag' is set to 1)
+
+% TODO: write documentation
+% TODO: separate code into two functions 'writeParseInfo' and 'readParseInfo'
+
 % initialize the flag to check the parsing information structure
-chkFlg = 0;
+chkFlag = 0;
 
 if isstruct( input )
     % input parameter is a structure containing XML parsing information
@@ -14,7 +25,7 @@ if isstruct( input )
 
     % if provided, set the flag to check the parsing information
     if nargin == 3
-        chkFlg = varargin{2};
+        chkFlag = varargin{2};
     end
 
     % make sure the tags-related fields exist and have the same length
@@ -34,7 +45,7 @@ if isstruct( input )
 
     % if requested, check parsing information structure for ambiguous tags
     if chkFlag
-        info = checkParseInfo( xroot, info );
+        %input = checkParseInfo( xroot, input );
     end
 
     % open the output file for writing
@@ -60,7 +71,7 @@ if isstruct( input )
         end
 
         % write string into the output file
-        if strcmp( input.type(cnt), 'root' )
+        if strcmpi( input.type(cnt), 'root' )
             fprintf( fid, '%s\n\n', str );
         else
             fprintf( fid, '%s\n', str );
@@ -74,15 +85,16 @@ if isstruct( input )
         end
         while diffLevel > 1
             typeIdx = find( input.level(1:cnt) == input.level(cnt)-1, 1, 'last' );
-            if strcmp( input.type(typeIdx), 'node' )
+            if strcmpi( input.type(typeIdx), 'node' )
                 str = '#endNode';
-            elseif strcmp( input.type(typeIdx), 'list' )
+            elseif strcmpi( input.type(typeIdx), 'list' )
                 str = '#endList';
             else
                 error( 'Humm...' );
             end
 
-            fprintf( fid, sprintf( '%*s\n', length(str) + 2 * (input.level(cnt) - diffLevel), str ) );
+            fprintf( fid, sprintf( '%*s\n', length(str) + 2 * ...
+                (input.level(cnt) - diffLevel), str ) );
             diffLevel = diffLevel - 1;
         end
     end
@@ -97,7 +109,7 @@ else
 
     % if provided, set the flag to check the parsing information
     if nargin == 2
-        chkFlg = varargin{1};
+        chkFlag = varargin{1};
     end
 
     % open the file for reading
@@ -121,39 +133,42 @@ else
     Ntags = length( tagIdx );
 
     % check if format information for date vectors and strings is provided
-    fmtIdx1 = strcmp( infoTxt{1}, '#dateVecFmt' );
+    fmtIdx1 = strcmpi( infoTxt{1}, '#dateVecFmt' );
     if any( fmtIdx1 )
-        info.dateVectorFormat = infoTxt{2}{fmtIdx1};
+        pinfo.dateVectorFormat = infoTxt{2}{fmtIdx1};
     end
-    fmtIdx2 = strcmp( infoTxt{1}, '#dateStrFmt' );
+    fmtIdx2 = strcmpi( infoTxt{1}, '#dateStrFmt' );
     if any( fmtIdx2 )
-        info.dateStringFormat = infoTxt{2}{fmtIdx2};
+        pinfo.dateStringFormat = infoTxt{2}{fmtIdx2};
     end
 
     % initialize the parsing information structure
-    info.tag = infoTxt{1}(tagIdx);
-    info.type = infoTxt{2}(tagIdx);
-    info.level(1:Ntags) = 1;
+    pinfo.tag = infoTxt{1}(tagIdx);
+    pinfo.type = infoTxt{2}(tagIdx);
+    pinfo.level(1:Ntags) = 1;
 
     % find the XML root tag and set level to 0
-    rootIdx = find( strcmp( info.type, 'root' ) );
-    assert( length( rootIdx )>0, 'convertParseInfo: a tag of type "root" must be present in the parsing information file.' );
-    info.level(rootIdx) = 0;
+    rootIdx = find( strcmpi( pinfo.type, 'root' ) );
+    assert( length( rootIdx )>0, ['convertParseInfo: a tag of type "root" ' ...
+        'must be present in the parsing information file.'] );
+    pinfo.level(rootIdx) = 0;
 
     % find the tags with type 'node' or 'list'
-    nodeIdx = find( strcmp( infoTxt{2}, 'node' ) );
-    listIdx = find( strcmp( infoTxt{2}, 'list' ) );
+    nodeIdx = find( strcmpi( infoTxt{2}, 'node' ) );
+    listIdx = find( strcmpi( infoTxt{2}, 'list' ) );
     blkIdx = sort( [nodeIdx(:); listIdx(:)] );
     Nblk = length( blkIdx ); % number of node and list blocks
 
     % find the #endNode and #endList tags
-    %endNodeIdx = find( strcmp( infoTxt{1}, '#endNode' ) );
-    %endListIdx = find( strcmp( infoTxt{1}, '#endList' ) );
-    endIdx = find( strncmp( infoTxt{1}, '#end', 4 ) );
+    %endNodeIdx = find( strcmpi( infoTxt{1}, '#endNode' ) );
+    %endListIdx = find( strcmpi( infoTxt{1}, '#endList' ) );
+    endIdx = find( strncmpi( infoTxt{1}, '#end', 4 ) );
     clear infoTxt;
 
     % make sure that the number of blocks and #end* tags match
-    assert( Nblk == length( endIdx ), 'convertParseInfo: the number of "#end" lines does not match the number of tags with type "node" or "list" in the parsing information file.' );
+    assert( Nblk == length( endIdx ), ['convertParseInfo: the number of ' ...
+        '"#end" lines does not match the number of tags with type "node" ' ...
+        'or "list" in the parsing information file.'] );
 
     % increase the level of tags located inside node and list blocks
     for cnt = 1:Nblk
@@ -188,7 +203,7 @@ else
         clear rawIdx1 rawIdx2;
 
         % increase the level of the tags in the node block by 1
-        info.level(goodIdx1:goodIdx2) = info.level(goodIdx1:goodIdx2) + 1;
+        pinfo.level(goodIdx1:goodIdx2) = pinfo.level(goodIdx1:goodIdx2) + 1;
         clear goodIdx1 goodIdx2;
     end
     clear blkIdx endIdx;
@@ -219,7 +234,7 @@ else
         %clear rawIdx1 rawIdx2;
 
         % increase the level of the tags in the node block by 1
-        %info.level(goodIdx1:goodIdx2) = info.level(goodIdx1:goodIdx2) + 1;
+        %pinfo.level(goodIdx1:goodIdx2) = pinfo.level(goodIdx1:goodIdx2) + 1;
         %clear goodIdx1 goodIdx2;
     %end
     %clear nodeIdx endNodeIdx;
@@ -247,18 +262,18 @@ else
         %clear rawIdx1 rawIdx2;
 
         % increase the level of the tags in the list block by 1
-        %info.level(goodIdx1:goodIdx2) = info.level(goodIdx1:goodIdx2) + 1;
+        %pinfo.level(goodIdx1:goodIdx2) = pinfo.level(goodIdx1:goodIdx2) + 1;
         %clear goodIdx1 goodIdx2;
     %end
     %clear listIdx endListIdx tagIdx;
 
     % if requested, check parsing information structure for ambiguous tags
     if chkFlag
-        info = checkParseInfo( xroot, info );
+        %pinfo = checkParseInfo( xroot, pinfo );
     end
 
     % return the parsing information structure as output
-    varargout{1} = info;
-    clear info;
+    varargout{1} = pinfo;
+    clear pinfo;
 end
 

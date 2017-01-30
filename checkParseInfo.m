@@ -1,12 +1,15 @@
-function info = checkParseInfo( xroot, info )
+function pinfo = checkParseInfo( xroot, pinfo )
+
+% TODO: implement interactive choice of the right path(s) for a tag
+% TODO: write documentation
 
 % indexes of tags with type other than 'root'
-tagIdx = find( ~strcmp( info.type, 'root' ) );
+tagIdx = find( ~strcmpi( pinfo.type, 'root' ) );
 
 % extract data from parsing information structure
-tagList = info.tag(tagIdx);
-levList = info.level(tagIdx);
-typeList = info.type(tagIdx);
+tagList = pinfo.tag(tagIdx);
+levList = pinfo.level(tagIdx);
+typeList = pinfo.type(tagIdx);
 Ntag = length( tagList ); % number of tags
 
 % loop over the tags
@@ -35,7 +38,7 @@ for cnt = 1:Ntag
             parentNode = tagOccur.item(no).getParentNode;
             parentName = char( parentNode.getNodeName );
             pathOccur{no+1} = parentName;
-            while ~strcmp( parentName, rootName );
+            while ~strcmpi( parentName, rootName );
                 parentNode = parentNode.getParentNode;
                 parentName = char( parentNode.getNodeName );
                 pathOccur{no+1} = strjoin( {parentName, pathOccur{no+1}}, '->' );
@@ -65,11 +68,11 @@ for cnt = 1:Ntag
             %end
         else
             % the current tag is not ambiguous: make sure it is a list or an array type
-            if strcmp( typeList{cnt}, 'node' )
+            if strcmpi( typeList{cnt}, 'node' )
                 % the tag should be a list, display a warning and correct it
                 warning( 'xmlExtract: correcting the type of tag "%s" from "%s" to "list".', tagList{cnt}, typeList{cnt} );
                 typeList{cnt} = 'list';
-            elseif ~strcmp( typeList{cnt}, 'list' ) && ~strcmpi( typeList{cnt}(end-2:end), 'Arr' )
+            elseif ~strcmpi( typeList{cnt}, 'list' ) && ~strcmpi( typeList{cnt}(end-2:end), 'Arr' )
                 % the tag has a wrong type, display a warning and correct it
                 warning( 'xmlExtract: correcting the type of tag "%s" from "%s" to "%sArr".', tagList{cnt}, typeList{cnt}, typeList{cnt} );
                 typeList{cnt} = [typeList{cnt}, 'Arr'];
