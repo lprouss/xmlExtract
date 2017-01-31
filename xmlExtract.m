@@ -100,7 +100,7 @@ function data = xmlExtractNode( node, pinfo )
             if isfield( pinfo, 'dateVectorFormat' )
                 subInfo.dateVectorFormat = pinfo.dateVectorFormat;
             end
-            if isfield( info, 'dateStringFormat' )
+            if isfield( pinfo, 'dateStringFormat' )
                 subInfo.dateStringFormat = pinfo.dateStringFormat;
             end
 

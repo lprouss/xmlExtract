@@ -179,14 +179,9 @@ else
         clear dist sortIdx;
 
         % find the number of nested list or node blocks inside the current one
-        %num = 1;
-        %while (cnt+num <= Nblk) & (blkIdx(cnt+num) < endSort(num))
-            %num = num + 1;
-        %end
-        if cnt < Nblk
-            num = sum( blkIdx(cnt+1:end) < endSort(1:Nblk-cnt) ) + 1;
-        else
-            num = 1;
+        num = 1;
+        while (cnt+num <= Nblk) & (blkIdx(cnt+num) < endSort(num))
+            num = num + 1;
         end
         %oblkIdx = find( blkIdx(cnt+1:end) < endSort(1) );
         %Noblk = length( oblkIdx );
