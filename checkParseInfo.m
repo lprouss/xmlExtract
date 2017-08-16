@@ -70,11 +70,11 @@ for cnt = 1:Ntag
             % the current tag is not ambiguous: make sure it is a list or an array type
             if strcmpi( typeList{cnt}, 'node' )
                 % the tag should be a list, display a warning and correct it
-                warning( 'xmlExtract: correcting the type of tag "%s" from "%s" to "list".', tagList{cnt}, typeList{cnt} );
+                warning( 'Correcting the type of tag "%s" from "%s" to "list".', tagList{cnt}, typeList{cnt} );
                 typeList{cnt} = 'list';
             elseif ~strcmpi( typeList{cnt}, 'list' ) && ~strcmpi( typeList{cnt}(end-2:end), 'Arr' )
                 % the tag has a wrong type, display a warning and correct it
-                warning( 'xmlExtract: correcting the type of tag "%s" from "%s" to "%sArr".', tagList{cnt}, typeList{cnt}, typeList{cnt} );
+                warning( 'Correcting the type of tag "%s" from "%s" to "%sArr".', tagList{cnt}, typeList{cnt}, typeList{cnt} );
                 typeList{cnt} = [typeList{cnt}, 'Arr'];
             end
         end

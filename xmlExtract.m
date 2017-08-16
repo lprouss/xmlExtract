@@ -5,7 +5,7 @@ function params = xmlExtract( xmlFile, parseInfo )
 
 % params: structure containing the information extracted from the XML file
 
-% external functions: convertParseInfo
+% external functions: convertParseInfo, getXMLnode (used by an internal function)
 
 % TODO: write documentation
 
@@ -15,7 +15,7 @@ function params = xmlExtract( xmlFile, parseInfo )
         xdoc = xmlread( xmlFile );
     catch
         % fail, return error
-        error( 'xmlExtract: failed to read the input XML file: %s', xmlFile );
+        error( 'Failed to read the input XML file: %s', xmlFile );
     end
     xroot = xdoc.getDocumentElement; % root node of the XML file
 
@@ -24,8 +24,8 @@ function params = xmlExtract( xmlFile, parseInfo )
         % it is a structure, validate the fields names
         if any( ~isfield( parseInfo, {'tag', 'type', 'level'} ) )
             % incorrect structure, return error
-            error( ['xmlExtract: the input parsing information structure ' ...
-                'must contain the fields "tag", "type" and "level".'] )
+            error( ['The input parsing information structure must contain ' ...
+                ' the fields "tag", "type" and "level".'] )
         else
             % correct structure, copy into the 'pinfo' variable
             pinfo = parseInfo;
@@ -41,14 +41,16 @@ function params = xmlExtract( xmlFile, parseInfo )
     xmlRoot = char( xroot.getNodeName ); % root name in the XML tree
 
     % return error if root names in the parsing info and XML tree differ
-    assert( strcmpi( xmlRoot, infoRoot ), ['xmlExtract: the name of the ' ...
-        'root node in the input XML file "%s" differ from the expected ' ...
-        'name in the parsing information "%s."'], xmlRoot, infoRoot );
+    assert( strcmpi( xmlRoot, infoRoot ), ['The name of the root node in ' ...
+        'the input XML file "%s" differ from the expected name in the ' ...
+        'parsing information "%s."'], xmlRoot, infoRoot );
 
     %% recursively parse the input XML tree
     params = xmlExtractNode( xroot, pinfo );
 end
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function data = xmlExtractNode( node, pinfo )
 
 % node: XML parent node containing the information to extract
@@ -120,8 +122,8 @@ function data = xmlExtractNode( node, pinfo )
                 end
             else
                 % invalid type for parent L1 node
-                error( ['xmlExtract: type "%s" for node "%s" is invalid ' ...
-                    'and should be either "node" or "list".'], cType, cName );
+                error( ['Type "%s" for node "%s" is invalid: it should be ' ...
+                    'either "node" or "list".'], cType, cName );
             end
             clear subInfo;
         else
@@ -132,6 +134,25 @@ function data = xmlExtractNode( node, pinfo )
             elseif strcmpi( cType, 'dateStr' ) && isfield( pinfo, 'dateStringFormat' )
                 % the node is a date string and its format is provided
                 subData = getXMLnode( cName, node, cType, pinfo.dateStringFormat );
+            elseif length( cType ) > 3 && strcmpi( cType(end-3:end), 'List' )
+                % the node is a repeated multiple times (list)
+
+                % number of repetitions
+                Nrep = cNode.getLength;
+
+                % extract data for each repetition
+                %if strcmpi( cType(1:end-3), 'str' )
+                subData = cell( 1, Nrep );
+                %else
+                    %subData = zeros( 1, Nrep );
+                %end
+                for nr = 1:Nrep
+                    %if strcmpi( cType(1:end-3), 'str' )
+                    subData{nr} = getXMLnode( cName, node, nr-1, cType(1:end-3) );
+                    %else
+                        %subData(nr) = getXMLnode( cName, node, nr-1, cType(1:end-3) );
+                    %end
+                end
             else
                 subData = getXMLnode( cName, node, cType );
             end
@@ -139,7 +160,8 @@ function data = xmlExtractNode( node, pinfo )
         clear childIdx cNode;
 
         % merge data extracted from the current L1 node with the main structure
-        data.(cName) = subData;
+        fieldName = matlab.lang.makeValidName( cName );
+        data.(fieldName) = subData;
         clear subData;
     end
 end

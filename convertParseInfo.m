@@ -30,16 +30,15 @@ if isstruct( input )
 
     % make sure the tags-related fields exist and have the same length
     if any( ~isfield( input, {'tag', 'type', 'level'} ) )
-        error( ['convertParseInfo: the input parsing information structure ' ...
-            'must contain the fields "tag", "type" and "level".'] );
+        error( ['The input parsing information structure must contain the ' ...
+            'fields "tag", "type" and "level".'] );
     else
         Ntag = length( input.tag );
         Ntype = length( input.type );
         Nlevel = length( input.level );
         if (Ntag ~= Ntype) || (Ntag ~= Nlevel)
-            error( ['convertParseInfo: fields "tag", "type" and "level" in ' ...
-                'the input parsing information structure have different ' ...
-                'lengths.'] );
+            error( ['Fields "tag", "type" and "level" in the input parsing ' ...
+            'information structure have different lengths.'] );
         end
     end
 
@@ -118,8 +117,7 @@ else
         fid = fopen( input, 'r' );
     catch
         % fail, return error
-        error( ['convertParseInfo: failed to read the parsing information ' ...
-            'file: %s'], input );
+        error( ['Failed to read the parsing information file: %s'], input );
     end
 
     % read the file
@@ -149,8 +147,8 @@ else
 
     % find the XML root tag and set level to 0
     rootIdx = find( strcmpi( pinfo.type, 'root' ) );
-    assert( length( rootIdx )>0, ['convertParseInfo: a tag of type "root" ' ...
-        'must be present in the parsing information file.'] );
+    assert( length( rootIdx )>0, ['A tag of type "root" must be present in ' ...
+        'the parsing information file.'] );
     pinfo.level(rootIdx) = 0;
 
     % find the tags with type 'node' or 'list'
@@ -166,9 +164,9 @@ else
     clear infoTxt;
 
     % make sure that the number of blocks and #end* tags match
-    assert( Nblk == length( endIdx ), ['convertParseInfo: the number of ' ...
-        '"#end" lines does not match the number of tags with type "node" ' ...
-        'or "list" in the parsing information file.'] );
+    assert( Nblk == length( endIdx ), ['The number of "#end" lines does ' ...
+        'not match the number of tags with type "node" or "list" in the ' ...
+        'parsing information file.'] );
 
     % increase the level of tags located inside node and list blocks
     for cnt = 1:Nblk
