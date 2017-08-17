@@ -2,7 +2,7 @@ function data = getXMLnode( tag, pnode, varargin )
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % getXMLnode
 %
-% 	Extract the specified tag from an XML tree.
+% 	Extract the specified tag from a node in an XML tree.
 %
 % 	Inputs:
 % 		- tag: name of the XML tag to extract
@@ -11,7 +11,7 @@ function data = getXMLnode( tag, pnode, varargin )
 %           repeated multiple times (default is 0)
 %       - type (optional): data type of the tag (see Additional information,
 %           default is 'str')
-%       - dateFmt (optional): format string for date/time tags (see Additional
+%       - dateFmt (optional): format string for date tags (see Additional
 %           information, default is '')
 %
 % 	Outputs:
@@ -29,18 +29,34 @@ function data = getXMLnode( tag, pnode, varargin )
 %           - 'intArr', an array of signed integers;
 %           - 'uint', an unsigned integer (64 bits);
 %           - 'uintArr', an array of unsigned integers;
-%           - 'dateStr', a date/time formatted as a string;
-%           - 'dateVec', a date/time formatted as a vector.
+%           - 'dateStr', a date string;
+%           - 'dateVec', a date vector.
 %
 %       The optional input parameter "dateFmt" is only used with data types
-%       'dateStr' and 'dateVec'.
+%       'dateStr' and 'dateVec'. For a date string, "dateFmt" should be
+%       formatted using MATLAB's date string identifiers, which are listed
+%       in the help of the command "datestr". Contrary to MATLAB, which only
+%       supports milliseconds ('FFF'), this function can handle any number of
+%       digits for sub-second data, e.g. 'FFFFFF' for the microseconds. For a
+%       date vector, "dateFmt" should be a comma-separated string containing
+%       several of the following fields:
+%           - 'year', the year;
+%           - 'mon', the month;
+%           - 'day', the day;
+%           - 'hour', the hour;
+%           - 'min', the minutes;
+%           - 'sec', the seconds;
+%           - 'msec', the milliseconds;
+%           - 'usec', the microseconds.
+%       For both data types 'dateStr' and 'dateVec', this function returns a
+%       six-elements date vector:
+%           [year, month, day, hour, minutes, seconds (with sub-seconds)]
 %
 % 	Author: Louis-Philippe Rousseau (Université Laval)
 % 	Created: April 2014 (original name was "getXMLitem")
 %   Updated: September 2015, January 2016, August 2017
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% TODO: improve handling of 'dateVec' and 'dateStr' data types?
 % TODO: remove support for 'int(Arr)' and 'uint(Arr)' data types?
 
 %% validate the number of input parameters
@@ -54,6 +70,12 @@ dateFmt = ''; % empty date format string
 %% list of supported data types
 dtypeList = {'str', 'dbl', 'dblArr', 'int', 'intArr', 'uint', 'uintArr',
     'dateStr', 'dateVec'};
+
+%% lsit of supported fields in the format string for a date string
+%dateStrList = {'yyyy', 'mm', 'dd', 'HH', 'MM', 'SS', 'FFF', 'FFFFFF'};
+
+%% list of supported fields in the format string for a date vector
+dateVecList = {'year', 'mon', 'day', 'hour', 'min', 'sec', 'msec', 'usec'};
 
 %% check the optional inputs
 if nargin > 2
@@ -113,53 +135,78 @@ if strcmpi( type, 'str' )
     data = char( ndata );
 elseif strncmpi( type, 'date', 4 )
     % date vector or string
-    if isempty( dateFmt )
-        % date format string not provided
-        if strcmpi( type, 'dateStr' )
-            % date string type, return unprocessed string
-            data = char( ndata );
-        else
-            % date vector type,  convert data vector to doubles
-            data = str2num( ndata );
-        end
+
+    % convert tag data according to the provided type
+    if strcmpi( type, 'dateStr' )
+        % date string type, convert to string
+        ndata = char( ndata );
     else
-        % date format string provided
+        % date vector type, convert data vector to doubles
+        ndata = str2num( ndata );
+    end
+
+    if isempty( dateFmt )
+        % date format string not provided, return converted data directly
+        data = ndata;
+    else
+        % date format string provided, use it to correctly convert data
         if strcmpi( type, 'dateStr' )
             % date string type, process string
-            strFmt = dateFmt(2:end-1); % format of date string
+
+            %strFmt = dateFmt(2:end-1); % format of date string
+
+            % find sub-second portion of the date string, if any
             subSecIdx = strfind( strFmt, 'F' ); % sub-second part of the string
-            ndata = char( ndata );
 
             % convert string to date vector
-            data = datevec( ndata(1:subSecIdx(1)-2), strFmt(1:subSecIdx(1)-2) );
-            data(6) = data(6) + str2double( ndata(subSecIdx) ) / ...
-                10^(length(subSecIdx));
+            if isempty( subSecIdx )
+                % no sub-second part in date string, use it directly
+                data = datevec( ndata, strFmt );
+            else
+                % sub-second part present in date string, handle it separately
+                data = datevec( ndata(1:subSecIdx(1)-1),
+                    strFmt(1:subSecIdx(1)-1) );
+                data(6) = data(6) + str2double( ndata(subSecIdx) ) / ...
+                    10^(length(subSecIdx));
+            end
         else
             % date vector type, process data vector
-            dFields = strsplit( dateFmt(2:end-1), ',' ); % split the format string
-            yeIdx = strcmp( dFields, 'year' ); % search the year component
-            monIdx = strcmp( dFields, 'mon' ); % search the month component
-            dayIdx = strcmp( dFields, 'day' ); % search the day component
-            hrIdx = strcmp( dFields, 'hour' ); % search the hour component
-            minIdx = strcmp( dFields, 'min' ); % search the minute component
-            secIdx = strcmp( dFields, 'sec' ); % search the second component
-            msecIdx = strcmp( dFields, 'msec' ); % search the millisecond component
-            usecIdx = strcmp( dFields, 'usec' ); % search the microsecond component
-            ndata = str2num( ndata ); % convert data vector to doubles
 
-            % construct the date vector
+            % split the format string at the commas
+            %dFields = strsplit( dateFmt(2:end-1), ',' );
+            dFields = strsplit( dateFmt, ',' );
+
+            % construct the date vector by looping over the elements
             data = zeros( 1, 6 ); % initialize the date vector
-            data(1) = round( ndata(yeIdx) );
-            data(2) = round( ndata(monIdx) );
-            data(3) = round( ndata(dayIdx) );
-            data(4) = round( ndata(hrIdx) );
-            data(5) = round( ndata(minIdx) );
-            if any( usecIdx )
-                data(6) = round( ndata(secIdx) ) + ndata(usecIdx) / 1e6;
-            elseif any( msecIdx )
-                data(6) = round( ndata(secIdx) ) + ndata(msecIdx) / 1e3;
-            else
-                data(6) = round( ndata(secIdx) );
+            for nel = 1:6
+                % search the current element in the format string
+                elIdx = strcmp( dFields, dateVecList{nel} );
+
+                % if it exists, copy the current element in the date vector
+                if ~isempty( elIdx )
+                    if nel < 6
+                        % for the first five elements, round the data
+                        data(nel) = round( ndata(elIdx) );
+                    else
+                        % for the last element, also check for sub-seconds data
+                        msecIdx = strcmp( dFields, 'msec' ); % milliseconds
+                        usecIdx = strcmp( dFields, 'usec' ); % microseconds
+                        if ~isempty( usecIdx )
+                            % microsecond element present in date vector
+                            data(6) = round( ndata(elIdx) ) + ...
+                                ndata(usecIdx) / 1e6;
+                        elseif ~isempty( msecIdx )
+                            % millisecond element present in date vector
+                            data(6) = round( ndata(elIdx) ) + ...
+                                ndata(msecIdx) / 1e3;
+                        else
+                            % no sub-second component in date vector
+                            data(6) = ndata(elIdx);
+                        end
+                        clear msecIdx usecIdx;
+                    end
+                end
+                clear elIdx;
             end
         end
     end
