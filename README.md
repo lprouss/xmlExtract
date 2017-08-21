@@ -1,17 +1,19 @@
 xmlExtract
 ==========
 
-MATLAB functions to extract data for user-provided tags from XML files.
+Function that acts as a front-end to MATLAB's `xmlread`, for easier extraction of data from XML files.
+
+
 
 ###Desired functionalities
 
 + find ambiguous tags and allow the user to select the right one (using the displayed paths)
 + create/update a parsing information file for future uses with the same or similar XML files
-+ convert the extracted data according to user specifications (return strings if not provided or try to guess the data type?)
++ convert the extracted data according to user specifications (return strings if not provided)
 + support the extraction of data arrays
 + create an output structure for the extracted data
-+ support attributes?
 + support conversion of date/time strings to date/time MATLAB format
++ support attributes?
 
 
 ###Design
@@ -37,16 +39,8 @@ MATLAB functions to extract data for user-provided tags from XML files.
 + float/double: dbl (single value and array)
 + string: str (single value and array?)
 + date/time: date (single value and array?)
-+ node: ->
-+ list (repeated node): ->>
-
-
-#####Processing flow
-
-1) read the XML file using the MATLAB function `xmlread`
-2) if necessary, create a structure using the contents of the parsing information file
-3) validate the provided parsing information
-4) verify if each tag is unambiguous
++ node
++ list (repeated node)
 
 ambiguous tags: individual (different parents) vs list (same parent)
 

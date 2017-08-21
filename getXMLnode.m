@@ -47,7 +47,8 @@ function data = getXMLnode( tag, pnode, varargin )
 %           - 'min', the minutes;
 %           - 'sec', the seconds;
 %           - 'msec', the milliseconds;
-%           - 'usec', the microseconds.
+%           - 'usec', the microseconds;
+%           - 'nan', an invalid or useless field.
 %       For both data types 'dateStr' and 'dateVec', this function returns a
 %       six-elements date vector:
 %           [year, month, day, hour, minutes, seconds (with sub-seconds)]
@@ -68,7 +69,7 @@ type = 'str'; % extract the tag data as a string
 dateFmt = ''; % empty date format string
 
 %% list of supported data types
-dtypeList = {'str', 'dbl', 'dblArr', 'int', 'intArr', 'uint', 'uintArr',
+dtypeList = {'str', 'dbl', 'dblArr', 'int', 'intArr', 'uint', 'uintArr', ...
     'dateStr', 'dateVec'};
 
 %% lsit of supported fields in the format string for a date string
@@ -92,33 +93,7 @@ if nargin > 2
             dateFmt = varargin{idx};
         end
     end
-    %cnt = varargin{1}; % occurence number for the tag
-    %type = varargin{2}; % data type for the tag
-    %dateFmt = varargin{3}; % format of the date tag
 end
-%elseif nargin == 3 || nargin == 4
-    % only some optional inputs are provided, find which ones
-
-    % determine what the first optional input is
-    %if ischar( varargin{1} )
-        % it is the data type for the tag
-        %type = varargin{1};
-    %else
-        % it is the occurence number for the repeated tag
-        %cnt = varargin{1};
-    %end
-
-    % determine what the second optional input is, if any
-    %if nargin == 4 && exist( 'type', 'var' )
-        % it is the date format
-        %dateFmt = varargin{2};
-    %elseif nargin == 4 && ~exist( 'type', 'var' )
-        % it is the data type for the tag
-        %type = varargin{2};
-    %end
-%else
-    % no optional input provided, use defaults
-%end
 
 %% try to extract the element
 try
@@ -152,7 +127,6 @@ elseif strncmpi( type, 'date', 4 )
         % date format string provided, use it to correctly convert data
         if strcmpi( type, 'dateStr' )
             % date string type, process string
-
             %strFmt = dateFmt(2:end-1); % format of date string
 
             % find sub-second portion of the date string, if any
@@ -164,7 +138,7 @@ elseif strncmpi( type, 'date', 4 )
                 data = datevec( ndata, strFmt );
             else
                 % sub-second part present in date string, handle it separately
-                data = datevec( ndata(1:subSecIdx(1)-1),
+                data = datevec( ndata(1:subSecIdx(1)-1), ...
                     strFmt(1:subSecIdx(1)-1) );
                 data(6) = data(6) + str2double( ndata(subSecIdx) ) / ...
                     10^(length(subSecIdx));
