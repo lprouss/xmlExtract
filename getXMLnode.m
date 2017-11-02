@@ -127,19 +127,18 @@ elseif strncmpi( type, 'date', 4 )
         % date format string provided, use it to correctly convert data
         if strcmpi( type, 'dateStr' )
             % date string type, process string
-            %strFmt = dateFmt(2:end-1); % format of date string
 
             % find sub-second portion of the date string, if any
-            subSecIdx = strfind( strFmt, 'F' ); % sub-second part of the string
+            subSecIdx = strfind( dateFmt, 'F' ); % sub-second part of the string
 
             % convert string to date vector
             if isempty( subSecIdx )
                 % no sub-second part in date string, use it directly
-                data = datevec( ndata, strFmt );
+                data = datevec( ndata, dateFmt );
             else
                 % sub-second part present in date string, handle it separately
                 data = datevec( ndata(1:subSecIdx(1)-1), ...
-                    strFmt(1:subSecIdx(1)-1) );
+                    dateFmt(1:subSecIdx(1)-1) );
                 data(6) = data(6) + str2double( ndata(subSecIdx) ) / ...
                     10^(length(subSecIdx));
             end

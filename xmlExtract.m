@@ -129,7 +129,7 @@ for cnt = 1:Nl1
         if isfield( pinfo, 'dateVecFmt' )
             subInfo.dateVecFmt = pinfo.dateVecFmt;
         end
-        if isfield( pinfo, 'dateStrFmat' )
+        if isfield( pinfo, 'dateStrFmt' )
             subInfo.dateStrFmt = pinfo.dateStrFmt;
         end
 
