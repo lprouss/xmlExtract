@@ -59,6 +59,9 @@ function data = getXMLnode( tag, pnode, varargin )
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % TODO: remove support for 'int(Arr)' and 'uint(Arr)' data types?
+% TODO: add support for attribute information, data type string starting with
+%   'attr', 'tag' is the attribute name, 'pnode' is the node which contains the
+%   desired attribute, ndata = pnode.item(cnt).getAttribute(tag);
 
 %% validate the number of input parameters
 narginchk( 2, 5 );
