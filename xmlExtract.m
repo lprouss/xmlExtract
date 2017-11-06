@@ -1,28 +1,25 @@
 function params = xmlExtract( xmlFile, parseInfo )
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% xmlExtract
+% Parse a XML file according to the provided parsing information.
 %
-% 	Parse a XML file according to the provided parsing information.
+% Inputs:
+%   - xmlFile: XML file to parse
+%   - parseInfo: file or structure containing information used to parse the
+%       XML file (see Additional information)
 %
-% 	Inputs:
-%       - xmlFile: XML file to parse
-%       - parseInfo: file or structure containing information used to parse the
-%           XML file (see Additional information)
+% Outputs:
+%   - params: structure containing data extracted from the XML file
 %
-% 	Outputs:
-% 		- params: structure containing data extracted from the XML file
+% Required functions (not part of MATLAB):
+%   - readParseInfoFile
+%   - xmlExtractNode (internal)
+%   - getXMLnode (used by 'xmlExtractNode')
 %
-% 	Internal and/or external functions used:
-%       - convertParseInfo
-%       - xmlExtractNode (internal)
-%       - getXMLnode (used by 'xmlExtractNode')
+% Additional information:
+%   'parseInfo'...
 %
-% 	Additional information:
-%       'parseInfo'...
-%
-% 	Author: Louis-Philippe Rousseau (Université Laval)
-% 	Created: May 2014 (original name was "xmlParse")
-%   Updated: September 2015, January 2016, August 2017
+% Author: Louis-Philippe Rousseau (Université Laval)
+% Created: May 2014 (original name was "xmlParse")
+% Updated: September 2015, January 2016, August 2017
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % TODO: complete documentation (details about 'parseInfo')
@@ -73,19 +70,24 @@ end
 
 %%% ------------------------------------------------------------------------ %%%
 function data = xmlExtractNode( node, pinfo )
-%   Recursively parse an XML node according to the provided parsing
-%   information.
+% Recursively parse an XML node according to the provided parsing
+% information.
 %
-%   Inputs:
-%       - node: XML node (parent) to parse
-%       - pinfo: structure containing information used to parse the XML node
-%           (see main documentation above)
+% Inputs:
+%   - node: XML node (parent) to parse
+%   - pinfo: structure containing information used to parse the XML node
+%       (see main documentation above)
 %
-%   Outputs:
-%       - data: structure containing data extracted from the XML node
+% Outputs:
+%   - data: structure containing data extracted from the XML node
 %
-% 	Internal and/or external functions used:
-%       - getXMLnode
+% Required functions (not part of MATLAB):
+%   - getXMLnode
+%
+% Author: Louis-Philippe Rousseau (Université Laval)
+% Created: May 2014 (original name was "xmlParseNode")
+% Updated: September 2015, January 2016, August 2017
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% find the level 1 nodes in the parsing information structure
 l1Idx = find( pinfo.level == 1 );

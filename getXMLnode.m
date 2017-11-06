@@ -1,61 +1,58 @@
 function data = getXMLnode( tag, pnode, varargin )
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% getXMLnode
+% Extract the specified tag from a node in an XML tree.
 %
-% 	Extract the specified tag from a node in an XML tree.
+% Inputs:
+%   - tag: name of the XML tag to extract
+%   - pnode: parent node of the tag in the XML tree
+%   - cnt (optional): occurence number (index) of the tag, if it is
+%       repeated multiple times (default is 0)
+%   - type (optional): data type of the tag (see Additional information,
+%       default is 'str')
+%   - dateFmt (optional): format string for date tags (see Additional
+%       information, default is '')
 %
-% 	Inputs:
-% 		- tag: name of the XML tag to extract
-%       - pnode: parent node of the tag in the XML tree
-%       - cnt (optional): occurence number (index) of the tag, if it is
-%           repeated multiple times (default is 0)
-%       - type (optional): data type of the tag (see Additional information,
-%           default is 'str')
-%       - dateFmt (optional): format string for date tags (see Additional
-%           information, default is '')
+% Outputs:
+%   - data: extracted data for the tag
 %
-% 	Outputs:
-% 		- data: extracted data for the tag
+% Required functions (not part of MATLAB): none
 %
-% 	Internal and/or external functions used: none
+% Additional information:
+%   The following values for the optional input parameter "type" are currently
+%   supported (case-insensitive):
+%       - 'str', a string (the default);
+%       - 'dbl', a float (64 bits);
+%       - 'dblArr', an array of floats;
+%       - 'int', a signed integer (64 bits);
+%       - 'intArr', an array of signed integers;
+%       - 'uint', an unsigned integer (64 bits);
+%       - 'uintArr', an array of unsigned integers;
+%       - 'dateStr', a date string;
+%       - 'dateVec', a date vector.
 %
-% 	Additional information:
-%       The following values for the optional input parameter "type" are
-%       currently supported (case-insensitive):
-%           - 'str', a string (the default);
-%           - 'dbl', a float (64 bits);
-%           - 'dblArr', an array of floats;
-%           - 'int', a signed integer (64 bits);
-%           - 'intArr', an array of signed integers;
-%           - 'uint', an unsigned integer (64 bits);
-%           - 'uintArr', an array of unsigned integers;
-%           - 'dateStr', a date string;
-%           - 'dateVec', a date vector.
+%   The optional input parameter "dateFmt" is only used with data types
+%   'dateStr' and 'dateVec'. For a date string, "dateFmt" should be formatted
+%   using MATLAB's date string identifiers, which are listed in the
+%   documentation of the command "datestr". Contrary to MATLAB, which only
+%   supports milliseconds ('FFF'), this function can handle any number of
+%   digits for sub-second data, e.g. 'FFFFFF' for the microseconds. For a
+%   date vector, "dateFmt" should be a comma-separated string containing
+%   several of the following fields:
+%       - 'year', the year;
+%       - 'mon', the month;
+%       - 'day', the day;
+%       - 'hour', the hour;
+%       - 'min', the minutes;
+%       - 'sec', the seconds;
+%       - 'msec', the milliseconds;
+%       - 'usec', the microseconds;
+%       - 'nan', an invalid or useless field.
+%   For both data types 'dateStr' and 'dateVec', this function returns a
+%   six-elements date vector:
+%       [year, month, day, hour, minutes, seconds (with sub-seconds)]
 %
-%       The optional input parameter "dateFmt" is only used with data types
-%       'dateStr' and 'dateVec'. For a date string, "dateFmt" should be
-%       formatted using MATLAB's date string identifiers, which are listed
-%       in the help of the command "datestr". Contrary to MATLAB, which only
-%       supports milliseconds ('FFF'), this function can handle any number of
-%       digits for sub-second data, e.g. 'FFFFFF' for the microseconds. For a
-%       date vector, "dateFmt" should be a comma-separated string containing
-%       several of the following fields:
-%           - 'year', the year;
-%           - 'mon', the month;
-%           - 'day', the day;
-%           - 'hour', the hour;
-%           - 'min', the minutes;
-%           - 'sec', the seconds;
-%           - 'msec', the milliseconds;
-%           - 'usec', the microseconds;
-%           - 'nan', an invalid or useless field.
-%       For both data types 'dateStr' and 'dateVec', this function returns a
-%       six-elements date vector:
-%           [year, month, day, hour, minutes, seconds (with sub-seconds)]
-%
-% 	Author: Louis-Philippe Rousseau (Université Laval)
-% 	Created: April 2014 (original name was "getXMLitem")
-%   Updated: September 2015, January 2016, August 2017
+% Author: Louis-Philippe Rousseau (Université Laval)
+% Created: April 2014 (original name was "getXMLitem")
+% Updated: September 2015, January 2016, August 2017
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % TODO: remove support for 'int(Arr)' and 'uint(Arr)' data types?

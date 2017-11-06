@@ -1,13 +1,24 @@
 function pinfo = readParseInfoFile( infile, varargin )
+% Read XML parsing information from a file and convert it to a structure.
+%
+% Inputs:
+%   - infile: file containing parsing information for a XML file (see
+%       documentation of function 'xmlExtract' for details)
+%   - chkFlag (optional): flag to check for ambiguous tags in the parsing
+%       information
+%
+% Outputs:
+%   - pinfo: structure containing the parsing information read from the file
+%
+% Required functions (not part of MATLAB):
+%   - checkParseInfo (if 'chkFlag' is set to 1)
+%
+% Author: Louis-Philippe Rousseau (Université Laval)
+% Created: January 2017 (original name was "convertParseInfo")
+% Updated: August 2017, November 2017
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% infile: file containing information used to parse the XML file (see Additional information)
-% chkFlag (optional): flag to check the parsing information for ambiguous tags
-
-% pinfo: parsing information read from the input file
-
-% external functions: checkParseInfo (if 'chkFlag' is set to 1)
-
-% TODO: write documentation
+% TODO: improve documentation
 
 % validate the number of inputs
 narginchk( 1, 2 );
@@ -95,6 +106,9 @@ for cnt = 1:Nblk
     % first and last indexes of the node or list block in the file data
     rawIdx1 = blkIdx(cnt) + 1;
     rawIdx2 = endSort(num) - 1;
+    if any( rawIdx2 == endIdx )
+        rawIdx2 = rawIdx2 - 1;
+    end
     %rawIdx2 = endSort(Noblk+1) - 1;
 
     % correct indexes of the node or list block in the clean data

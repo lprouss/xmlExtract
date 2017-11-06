@@ -1,9 +1,23 @@
 function writeParseInfoFile( parseInfo, outfile )
+% Write XML parsing information to a file.
+%
+% Inputs:
+%   - parseInfo: structure containing parsing information for a XML file (see
+%       documentation of function 'xmlExtract' for details)
+%   - outfile: name of the file used to save the parsing information
+%
+% Outputs: none
+%
+% Required functions (not part of MATLAB): none
+%
+% Author: Louis-Philippe Rousseau (Université Laval)
+% Created: January 2017 (original name was "convertParseInfo")
+% Updated: August 2017, November 2017
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% parseInfo: structure containing information used to parse the XML file (see Additional information)
-% outfile: name of the file used to save the parsing information
-
-% TODO: write documentation
+% TODO: add option to verify the parsing information before writing it to the
+%   file (is it necessary?)
+% TODO: improve documentation
 
 % validate the number of inputs
 narginchk( 2, 2 );

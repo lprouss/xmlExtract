@@ -1,7 +1,23 @@
 function pinfo = checkParseInfo( xroot, pinfo )
+% Verify the structure containing information used to parse a XML file.
+%
+% Inputs:
+%   - xroot: root node of the XML file to parse
+%   - pinfo: parsing information structure to verify (see documentation of
+%       function 'xmlExtract' for details)
+%
+% Outputs:
+%   - pinfo: corrected parsing information structure
+%
+% Required functions (not part of MATLAB): none
+%
+% Author: Louis-Philippe Rousseau (Université Laval)
+% Created: January 2017
+% Updated: November 2017
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % TODO: implement interactive choice of the right path(s) for a tag
-% TODO: write documentation
+% TODO: improve documentation
 
 % indexes of tags with type other than 'root'
 tagIdx = find( ~strcmpi( pinfo.type, 'root' ) );
