@@ -1,0 +1,141 @@
+#dateStrFmt  "yyyy-mm-ddTHH:MM:SS.FFFFFF"
+
+product     root
+
+adsHeader   node
+    missionId   str
+    productType     str
+    polarisation    str
+    mode    str
+    swath   str
+    startTime   dateStr
+    stopTime    dateStr
+#endNode
+
+generalAnnotation   node
+    pass    str
+    platformHeading     dbl
+    projection  str
+    rangeSamplingRate   dbl
+    radarFrequency  dbl
+    azimuthSteeringRate     dbl
+    azimuthTime     dateStr
+    firstLineSensingTime    dateStr
+    lastLineSensingTime    dateStr
+    prf     dbl
+    pri     dbl
+    rank    dbl
+    txPulseLength   dbl
+    txPulseStartFrequency   dbl
+    txPulseRampRate     dbl
+    orbit   list
+        time    dateStr
+        frame   str
+        position    dblArr
+        velocity    dblArr
+    #endList
+    attitude    list
+        time    dateStr
+        frame   str
+        q0  dbl
+        q1  dbl
+        q2  dbl
+        q3  dbl
+        wx  dbl
+        wy  dbl
+        wz  dbl
+        roll    dbl
+        pitch   dbl
+        yaw     dbl
+    #endList
+    azimuthFmRate   list
+        azimuthTime     dateStr
+        t0  dbl
+        azimuthFmRatePolynomial     dblArr
+    #endList
+#endNode
+
+imageAnnotation     node
+    productFirstLineUtcTime     dateStr
+    productLastLineUtcTime     dateStr
+    ascendingNodeTime   dateStr
+    slantRangeTime  dbl
+    pixelValue  str
+    outputPixels    str
+    rangePixelSpacing   dbl
+    azimuthPixelSpacing     dbl
+    azimuthTimeInterval     dbl
+    azimuthFrequency    dbl
+    numberOfSamples     dbl
+    numberOfLines   dbl
+    zeroDopMinusAcqTime     dbl
+    incidenceAngleMidSwath  dbl
+    rangeProcessing     node
+        windowType  str
+        windowCoefficient   dbl
+        totalBandwidth  dbl
+        processingBandwidth     dbl
+        lookBandwidth   dbl
+        numberOfLooks   dbl
+        lookOverlap     dbl
+    #endNode
+    azimuthProcessing   node
+        windowType  str
+        windowCoefficient   dbl
+        totalBandwidth  dbl
+        processingBandwidth     dbl
+        lookBandwidth   dbl
+        numberOfLooks   dbl
+        lookOverlap     dbl
+    #endNode
+    processorScalingFactor  dbl
+#endNode
+
+dopplerCentroid     list
+    azimuthTime     dateStr
+    t0  dbl
+    geometryDcPolynomial    dblArr
+    dataDcPolynomial    dblArr
+    fineDceAzimuthStartTime     dateStr
+    fineDceAzimuthStopTime     dateStr
+    fineDce     list
+        slantRangeTime  dbl
+        frequency   dbl
+    #endList
+#endList
+
+antennaPattern  list
+    azimuthTime     dateStr
+    slantRangeTime  dblArr
+    elevationAngle  dblArr
+    elevationPattern    dblArr
+    incidenceAngle  dblArr
+    terrainHeight   dbl
+    roll    dbl
+#endList
+
+swathTiming     node
+    linesPerBurst   dbl
+    samplesPerBurst     dbl
+    burst   list
+        azimuthTime     dateStr
+        azimuthAnxTime  dbl
+        sensingTime     dateStr
+        byteOffset  dbl
+        firstValidSample    dblArr
+        lastValidSample     dblArr
+    #endList
+#endNode
+
+geolocationGridPoint    list
+    azimuthTime     dateStr
+    slantRangeTime  dbl
+    line    dbl
+    pixel   dbl
+    latitude    dbl
+    longitude   dbl
+    height  dbl
+    incidenceAngle  dbl
+    elevationAngle  dbl
+#endList
+
