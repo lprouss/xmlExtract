@@ -3,10 +3,10 @@ function writeParseInfoFile( parseInfo, outfile )
 %
 % Inputs:
 %   - parseInfo: structure containing parsing information for a XML file (see
-%       documentation of function 'xmlExtract' for details)
-%   - outfile: name of the file used to save the parsing information
+%       file named "PARSINGINFO.md" for details).
+%   - outfile: name of the file used to save the parsing information.
 %
-% Outputs: none
+% Outputs: none.
 %
 % Required functions (not part of MATLAB): none
 %
@@ -16,8 +16,8 @@ function writeParseInfoFile( parseInfo, outfile )
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % TODO: add option to verify the parsing information before writing it to the
-%   file (is it necessary?)
-% TODO: improve documentation
+%   file (is it necessary?).
+% TODO: improve documentation.
 
 % validate the number of inputs
 narginchk( 2, 2 );
