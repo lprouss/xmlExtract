@@ -3,12 +3,12 @@ function pinfo = readParseInfoFile( infile, varargin )
 %
 % Inputs:
 %   - infile: file containing parsing information for a XML file (see
-%       documentation of function 'xmlExtract' for details)
+%       file named "PARSINGINFO.md" for details.
 %   - chkFlag (optional): flag to check for ambiguous tags in the parsing
-%       information
+%       information (NOT IMPLEMENTED YET).
 %
 % Outputs:
-%   - pinfo: structure containing the parsing information read from the file
+%   - pinfo: structure containing the parsing information read from the file.
 %
 % Required functions (not part of MATLAB):
 %   - checkParseInfo (if 'chkFlag' is set to 1)
@@ -18,7 +18,7 @@ function pinfo = readParseInfoFile( infile, varargin )
 % Updated: August 2017, November 2017
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% TODO: improve documentation
+% TODO: add details in documentation?
 
 % validate the number of inputs
 narginchk( 1, 2 );
@@ -76,8 +76,6 @@ blkIdx = sort( [nodeIdx(:); listIdx(:)] );
 Nblk = length( blkIdx ); % number of node and list blocks
 
 % find the #endNode and #endList tags
-%endNodeIdx = find( strcmpi( infoTxt{1}, '#endNode' ) );
-%endListIdx = find( strcmpi( infoTxt{1}, '#endList' ) );
 endIdx = find( strncmpi( infoTxt{1}, '#end', 4 ) );
 clear infoTxt;
 
@@ -99,9 +97,6 @@ for cnt = 1:Nblk
     while (cnt+num <= Nblk) & (blkIdx(cnt+num) < endSort(num))
         num = num + 1;
     end
-    %oblkIdx = find( blkIdx(cnt+1:end) < endSort(1) );
-    %Noblk = length( oblkIdx );
-    %clear oblkIdx;
 
     % first and last indexes of the node or list block in the file data
     rawIdx1 = blkIdx(cnt) + 1;
@@ -109,7 +104,6 @@ for cnt = 1:Nblk
     if any( rawIdx2 == endIdx )
         rawIdx2 = rawIdx2 - 1;
     end
-    %rawIdx2 = endSort(Noblk+1) - 1;
 
     % correct indexes of the node or list block in the clean data
     goodIdx1 = find( tagIdx == rawIdx1 );
@@ -122,67 +116,10 @@ for cnt = 1:Nblk
 end
 clear blkIdx endIdx;
 
-% increase the level of tags located inside node blocks
-%Nnode = length( nodeIdx );
-%for cnt = 1:Nnode
-    % sort #endNode tags by proximity to the current node tag
-    %[dist, sortIdx] = sort( endNodeIdx - nodeIdx(cnt) );
-    %endSort = endNodeIdx(sortIdx);
-    %[dist, sortIdx] = sort( endIdx - nodeIdx(cnt) );
-    %endSort = endIdx(sortIdx);
-    %endSort = endSort(dist > 0); % discard negative distances
-    %clear dist sortIdx;
-
-    % find if there are other node tags before the closest #endNode
-    %oblkIdx = find( nodeIdx(cnt+1:end) < endSort(1) );
-    %Nblk = length( oblkIdx );
-    %clear oblkIdx;
-
-    % set the first and last indexes of the node block in the file data
-    %rawIdx1 = nodeIdx(cnt) + 1;
-    %rawIdx2 = endSort(Nblk+1) - 1;
-
-    % find the correct indexes of the node block in the clean data
-    %goodIdx1 = find( tagIdx == rawIdx1 );
-    %goodIdx2 = find( tagIdx == rawIdx2 );
-    %clear rawIdx1 rawIdx2;
-
-    % increase the level of the tags in the node block by 1
-    %pinfo.level(goodIdx1:goodIdx2) = pinfo.level(goodIdx1:goodIdx2) + 1;
-    %clear goodIdx1 goodIdx2;
-%end
-%clear nodeIdx endNodeIdx;
-
-% increase the level of tags located inside list blocks
-%Nlist = length( listIdx );
-%for cnt = 1:Nlist
-    % sort #endList tags by proximity to the current list tag
-    %[dist, sortIdx] = sort( endListIdx - listIdx(cnt) );
-    %endSort = endListIdx(sortIdx);
-    %endSort = endSort(dist > 0); % discard negative distances
-
-    % find if there are other list tags before the closest #endList
-    %blkIdx = find( listIdx(cnt+1:end) < endSort(1) );
-    %Nblk = length( blkIdx );
-    %clear blkIdx;
-
-    % set the first and last indexes of the list block in the file data
-    %rawIdx1 = listIdx(cnt) + 1;
-    %rawIdx2 = endSort(Nblk+1) - 1;
-
-    % find the correct indexes of the list block in the clean data
-    %goodIdx1 = find( tagIdx == rawIdx1 );
-    %goodIdx2 = find( tagIdx == rawIdx2 );
-    %clear rawIdx1 rawIdx2;
-
-    % increase the level of the tags in the list block by 1
-    %pinfo.level(goodIdx1:goodIdx2) = pinfo.level(goodIdx1:goodIdx2) + 1;
-    %clear goodIdx1 goodIdx2;
-%end
-%clear listIdx endListIdx tagIdx;
-
 % if requested, check parsing information structure for ambiguous tags
 if chkFlag
     %pinfo = checkParseInfo( xroot, pinfo );
+    warning( ['Validation of the parsing information structure has not ' ...
+        'been implemented yet. Skipping.'] );
 end
 

@@ -2,29 +2,26 @@ function params = xmlExtract( xmlFile, parseInfo )
 % Parse a XML file according to the provided parsing information.
 %
 % Inputs:
-%   - xmlFile: XML file to parse
+%   - xmlFile: XML file to parse.
 %   - parseInfo: file or structure containing information used to parse the
-%       XML file (see Additional information)
+%       XML file, see file named "PARSINGINFO.md" for details.
 %
 % Outputs:
-%   - params: structure containing data extracted from the XML file
+%   - params: structure containing data extracted from the XML file.
 %
 % Required functions (not part of MATLAB):
 %   - readParseInfoFile
 %   - xmlExtractNode (internal)
 %   - getXMLnode (used by 'xmlExtractNode')
 %
-% Additional information:
-%   'parseInfo'...
-%
 % Author: Louis-Philippe Rousseau (Université Laval)
 % Created: May 2014 (original name was "xmlParse")
 % Updated: September 2015, January 2016, August 2017
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% TODO: complete documentation (details about 'parseInfo')
+% TODO: complete documentation (details about 'parseInfo').
 % TODO: validate 'parseInfo' structure?
-% TODO: try to improve/simplify 'xmlExtractNode'
+% TODO: try to improve/simplify 'xmlExtractNode'.
 
 %% read the input XML file
 try
@@ -68,18 +65,19 @@ params = xmlExtractNode( xroot, pinfo );
 %% end of 'xmlExtract' (main function)
 end
 
+
 %%% ------------------------------------------------------------------------ %%%
 function data = xmlExtractNode( node, pinfo )
 % Recursively parse an XML node according to the provided parsing
 % information.
 %
 % Inputs:
-%   - node: XML node (parent) to parse
+%   - node: XML node (parent) to parse.
 %   - pinfo: structure containing information used to parse the XML node
-%       (see main documentation above)
+%       (see main documentation above).
 %
 % Outputs:
-%   - data: structure containing data extracted from the XML node
+%   - data: structure containing data extracted from the XML node.
 %
 % Required functions (not part of MATLAB):
 %   - getXMLnode
@@ -170,17 +168,9 @@ for cnt = 1:Nl1
             Nrep = cNode.getLength;
 
             % extract data for each repetition
-            %if strcmpi( cType(1:end-3), 'str' )
             subData = cell( 1, Nrep );
-            %else
-                %subData = zeros( 1, Nrep );
-            %end
             for nr = 1:Nrep
-                %if strcmpi( cType(1:end-3), 'str' )
                 subData{nr} = getXMLnode( cName, node, nr-1, cType(1:end-3) );
-                %else
-                    %subData(nr) = getXMLnode( cName, node, nr-1, cType(1:end-3) );
-                %end
             end
         else
             subData = getXMLnode( cName, node, cType );

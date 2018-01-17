@@ -2,17 +2,17 @@ function data = getXMLnode( tag, pnode, varargin )
 % Extract the specified tag from a node in an XML tree.
 %
 % Inputs:
-%   - tag: name of the XML tag to extract
-%   - pnode: parent node of the tag in the XML tree
+%   - tag: name of the XML tag to extract.
+%   - pnode: parent node of the tag in the XML tree.
 %   - cnt (optional): occurence number (index) of the tag, if it is
-%       repeated multiple times (default is 0)
+%       repeated multiple times (default is 0).
 %   - type (optional): data type of the tag (see Additional information,
-%       default is 'str')
+%       default is 'str').
 %   - dateFmt (optional): format string for date tags (see Additional
-%       information, default is '')
+%       information, default is '').
 %
 % Outputs:
-%   - data: extracted data for the tag
+%   - data: extracted data for the tag.
 %
 % Required functions (not part of MATLAB): none
 %
@@ -55,10 +55,10 @@ function data = getXMLnode( tag, pnode, varargin )
 % Updated: September 2015, January 2016, August 2017
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% TODO: remove support for 'int(Arr)' and 'uint(Arr)' data types?
-% TODO: add support for attribute information, data type string starting with
+% TODO: remove support for 'int(Arr)' and 'uint(Arr)' data types (useless)?
+% TODO: add support for attribute information -> data type string starting with
 %   'attr', 'tag' is the attribute name, 'pnode' is the node which contains the
-%   desired attribute, ndata = pnode.item(cnt).getAttribute(tag);
+%   desired attribute, ndata = pnode.item(cnt).getAttribute(tag).
 
 %% validate the number of input parameters
 narginchk( 2, 5 );
@@ -72,7 +72,7 @@ dateFmt = ''; % empty date format string
 dtypeList = {'str', 'dbl', 'dblArr', 'int', 'intArr', 'uint', 'uintArr', ...
     'dateStr', 'dateVec'};
 
-%% lsit of supported fields in the format string for a date string
+%% list of supported fields in the format string for a date string
 %dateStrList = {'yyyy', 'mm', 'dd', 'HH', 'MM', 'SS', 'FFF', 'FFFFFF'};
 
 %% list of supported fields in the format string for a date vector
@@ -146,7 +146,6 @@ elseif strncmpi( type, 'date', 4 )
             % date vector type, process data vector
 
             % split the format string at the commas
-            %dFields = strsplit( dateFmt(2:end-1), ',' );
             dFields = strsplit( dateFmt, ',' );
 
             % construct the date vector by looping over the elements
