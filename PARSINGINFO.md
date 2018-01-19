@@ -3,7 +3,7 @@ Organization of parsing formation file and structure
 
 This document describes the organization of a parsing information file/structure, required by `xmlExtract.m` to extract (parse) data from a XML file.
 
-##Parsing information file
+## Parsing information file
 
 A parsing information file has two tab-separated columns: the first one contains the names (tags) of the nodes to extract from the XML file, while the second contains the data type for each node. Each node to extract should be located on a separate line. Note that it is only necessary to provide the minimum unambiguous path for each desired node (without child).
 
@@ -55,7 +55,7 @@ For a date vector, only milliseconds and microseconds are supported. Below are e
 The file named `parseInfoSentinel1Annotation.txt` provides a rather elaborate example of a parsing information file.
 
 
-##Parsing information structure
+## Parsing information structure
 
 A parsing information structure should have at least three fields:
 
