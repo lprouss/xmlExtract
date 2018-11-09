@@ -50,8 +50,9 @@ else
 end
 
 %% check if the input XML tree has the expected root node
-rootIdx = find( strcmpi( pinfo.type, 'root' ) );
-infoRoot = pinfo.tag{rootIdx}; % expected root name in the parsing info
+%rootIdx = find( strcmpi( pinfo.type, 'root' ) );
+%infoRoot = pinfo.tag{rootIdx}; % expected root name in the parsing info
+infoRoot = pinfo.tag{strcmpi( pinfo.type, 'root' )}; % expected root name
 xmlRoot = char( xroot.getNodeName ); % root name in the XML tree
 
 % return error if root names in the parsing info and XML tree differ

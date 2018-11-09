@@ -35,7 +35,7 @@ try
     fid = fopen( infile, 'r' );
 catch
     % fail, return error
-    error( ['Failed to read the parsing information file: %s'], infile );
+    error( 'Failed to read the parsing information file: %s', infile );
 end
 
 % read the file
@@ -65,7 +65,7 @@ pinfo.level(1:Ntags) = 1;
 
 % find the XML root tag and set level to 0
 rootIdx = find( strcmpi( pinfo.type, 'root' ) );
-assert( length( rootIdx )>0, ['A tag of type "root" must be present in ' ...
+assert( ~isempty( rootIdx ), ['A tag of type "root" must be present in ' ...
     'the parsing information file.'] );
 pinfo.level(rootIdx) = 0;
 
@@ -94,7 +94,7 @@ for cnt = 1:Nblk
 
     % find the number of nested list or node blocks inside the current one
     num = 1;
-    while (cnt+num <= Nblk) & (blkIdx(cnt+num) < endSort(num))
+    while ( cnt+num <= Nblk ) && ( blkIdx(cnt+num) < endSort(num) )
         num = num + 1;
     end
 
